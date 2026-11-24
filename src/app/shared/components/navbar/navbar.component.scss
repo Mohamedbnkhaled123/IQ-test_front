@@ -1,0 +1,126 @@
+.navbar {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.navbar-inner {
+  width: min(1120px, 100% - 2rem);
+  margin-inline: auto;
+  min-height: 4.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  padding-block: var(--space-xs);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--text-primary);
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  color: var(--text-secondary);
+  font-weight: 700;
+  font-size: 0.92rem;
+  padding-block: 0.35rem;
+  padding-inline: 0.7rem;
+  border-radius: var(--radius-sm);
+}
+
+.nav-links a.active-link {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.theme-btn {
+  background: var(--bg-subtle);
+  border: 1px solid var(--silver-border);
+  border-radius: var(--radius-pill);
+  color: var(--text-primary);
+  padding-block: 0.3rem;
+  padding-inline: 0.85rem;
+  font-weight: 700;
+  font-size: 0.84rem;
+  cursor: pointer;
+}
+
+.user-chip {
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  padding-block: 0.25rem;
+  padding-inline: 0.75rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.admin-link {
+  color: var(--text-muted);
+}
+
+.btn-link {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--color-danger);
+  padding-block: 0.3rem;
+  padding-inline: 0.75rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    position: static;
+  }
+
+  .navbar-inner {
+    width: calc(100% - 1.25rem);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-sm);
+    padding-block: var(--space-sm);
+  }
+
+  .brand {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .nav-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-xs);
+    width: 100%;
+  }
+
+  .nav-links a,
+  .theme-btn,
+  .user-chip,
+  .btn-link {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    overflow-wrap: anywhere;
+  }
+}

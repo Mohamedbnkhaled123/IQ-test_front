@@ -1,0 +1,106 @@
+<div class="bulk-box">
+  <div class="bulk-header">
+    <div>
+      <h3>شراء اختبارات لأشخاص آخرين (شركات / أفراد)</h3>
+      <p class="muted-text">أضف الأسماء وأرقام التليفونات وارفع إيصالاً واحداً بالإجمالي لفتح الاختبار لهم فوراً.</p>
+    </div>
+    <div class="total-pill">
+      <span>الإجمالي:</span>
+      <strong>{{ totalAmount() }} ج.م</strong>
+      <small>({{ nominees().length }} × {{ baseExamPrice() }} ج.م)</small>
+    </div>
+  </div>
+
+  @if (paymentInfo(); as info) {
+    <div class="receiver-strip">
+      <span><strong>InstaPay:</strong> {{ info.instapayHandle }} ({{ info.instapayPhone }})</span>
+      <span><strong>{{ info.walletProvider }}:</strong> {{ info.walletNumber }}</span>
+    </div>
+  }
+
+  <app-alert-banner type="success" [message]="successMessage()" />
+  @if (errorInfo(); as err) {
+    <app-alert-banner type="danger" [message]="err.reason || err.message" />
+    @if (err.whatsappUrl) {
+      <a class="btn btn-whatsapp wa-link" [href]="err.whatsappUrl" target="_blank" rel="noopener">
+        تواصل مع الأدمن عبر واتساب للتفعيل اليدوي
+      </a>
+    }
+  }
+
+  <div class="nominees-list">
+    @for (nominee of nominees(); track $index) {
+      <div class="nominee-row">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="اسم الشخص"
+          [value]="nominee.name"
+          (input)="onNomineeInput($index, 'name', $event)"
+        />
+        <input
+          type="tel"
+          class="form-control"
+          placeholder="رقم التليفون (01xxxxxxxxx)"
+          [value]="nominee.phone"
+          (input)="onNomineeInput($index, 'phone', $event)"
+        />
+        <button
+          type="button"
+          class="btn btn-secondary"
+          [disabled]="nominees().length <= 1"
+          (click)="removeNominee($index)"
+        >
+          حذف
+        </button>
+      </div>
+    }
+  </div>
+
+  <div class="actions-row">
+    <button type="button" class="btn btn-secondary" (click)="addNominee()">
+      + إضافة شخص آخر
+    </button>
+  </div>
+
+  <div class="payment-controls">
+    <div class="form-field">
+      <label for="bulk-method">طريقة التحويل</label>
+      <select
+        id="bulk-method"
+        class="form-control"
+        [value]="method()"
+        (change)="onMethodChange($event)"
+      >
+        <option value="instapay">InstaPay</option>
+        <option value="wallet">محفظة إلكترونية</option>
+      </select>
+    </div>
+
+    <div class="form-field">
+      <label for="bulk-receipt">صورة إيصال التحويل (JPG / PNG / WEBP)</label>
+      <input
+        id="bulk-receipt"
+        type="file"
+        class="form-control"
+        accept="image/jpeg,image/png,image/webp"
+        (change)="onFileSelected($event)"
+      />
+    </div>
+  </div>
+
+  @if (previewUrl(); as imgSrc) {
+    <div class="preview-wrap">
+      <img [src]="imgSrc" alt="معاينة إيصال الدفع" />
+    </div>
+  }
+
+  <button
+    type="button"
+    class="btn btn-primary"
+    [disabled]="submitting()"
+    (click)="submitBulkPurchase()"
+  >
+    {{ submitting() ? 'جاري فحص الإيصال بالذكاء الاصطناعي...' : 'تأكيد الدفع وإصدار التذاكر' }}
+  </button>
+</div>

@@ -1,0 +1,38 @@
+<section class="page-container admin-login-wrap">
+  <div class="card">
+    <h2>تسجيل دخول الإدارة</h2>
+    <p class="subtitle">أدخل بيانات مدير النظام للوصول إلى لوحة التحكم الكاملة.</p>
+
+    <app-alert-banner type="danger" [message]="errorMessage()" />
+
+    @if (demoMode()) {
+      <div class="demo-box">
+        <p class="demo-note">تم تفعيل الدخول المباشر للوحة الإدارة (وضع العرض).</p>
+        <button
+          type="button"
+          class="btn btn-primary full-btn"
+          [disabled]="loading()"
+          (click)="enterDemoAdmin()"
+        >
+          {{ loading() ? 'جاري الدخول...' : 'دخول مباشر للوحة الإدارة (وضع العرض)' }}
+        </button>
+      </div>
+    } @else {
+      <form [formGroup]="loginForm" (ngSubmit)="submit()">
+        <div class="form-field">
+          <label for="admin-user">اسم المستخدم</label>
+          <input id="admin-user" type="text" class="form-control" formControlName="username" />
+        </div>
+
+        <div class="form-field">
+          <label for="admin-pass">كلمة المرور</label>
+          <input id="admin-pass" type="password" class="form-control" formControlName="password" />
+        </div>
+
+        <button type="submit" class="btn btn-primary full-btn" [disabled]="loading()">
+          {{ loading() ? 'جاري التحقق...' : 'دخول لوحة الإدارة' }}
+        </button>
+      </form>
+    }
+  </div>
+</section>

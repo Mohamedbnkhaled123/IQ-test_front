@@ -1,0 +1,26 @@
+.sub-card {
+  margin-block-end: var(--space-md);
+}
+
+.sub-card h3 {
+  margin: 0 0 var(--space-md);
+}
+
+.grant-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+.btn-xs {
+  padding-block: 0.3rem;
+  padding-inline: 0.7rem;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 720px) {
+  .grant-form {
+    grid-template-columns: 1fr;
+  }
+}

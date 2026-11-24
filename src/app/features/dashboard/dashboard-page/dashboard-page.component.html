@@ -1,0 +1,140 @@
+<section class="page-container">
+  @if (loading()) {
+    <div class="card">
+      <app-loading-spinner label="جاري تحميل لوحة التحكم..." />
+    </div>
+  } @else {
+    <app-alert-banner type="danger" [message]="errorMessage()" />
+
+    @if (dashboard(); as data) {
+      <div class="dash-grid">
+        <div class="card profile-card">
+          <h2>مرحباً، {{ data.user.name }}</h2>
+          <div class="profile-meta">
+            <span><strong>الهاتف:</strong> {{ data.user.phone }}</span>
+            <span><strong>العمر:</strong> {{ data.user.age }} سنة</span>
+            <span><strong>المهنة:</strong> {{ data.user.occupation }}</span>
+            <span><strong>التصنيف الذاتي:</strong> {{ data.user.selfIqRating }}</span>
+            <span><strong>المحاولات المكتملة:</strong> {{ data.user.completedAttemptsCount }}</span>
+          </div>
+        </div>
+
+        <div class="card ticket-card">
+          <h3>حالة تذكرة الاختبار</h3>
+          @if (data.hasAvailableGrant) {
+            <p class="ticket-status">
+              <span class="badge badge-success">تذكرة متاحة</span>
+              لديك تذكرة اختبار مفعّلة وجاهزة للاستخدام الآن.
+            </p>
+            <a routerLink="/exam" class="btn btn-primary">ابدأ الاختبار الآن</a>
+          } @else {
+            <p class="ticket-status">
+              <span class="badge badge-warning">يتطلب الدفع المسبق</span>
+              رسوم المحاولة القادمة: <strong>{{ data.nextAttemptPrice }} ج.م</strong>
+            </p>
+            <a routerLink="/payment" class="btn btn-primary">
+              ادفع لبدء الاختبار ({{ data.nextAttemptPrice }} ج.م)
+            </a>
+          }
+        </div>
+      </div>
+
+      <div class="card section-card">
+        <h3>نتائجي السابقة</h3>
+        @if (data.myAttempts.length === 0) {
+          <p class="empty-text">لم تقم بأي محاولات اختبار مكتملة حتى الآن.</p>
+        } @else {
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>رقم المحاولة</th>
+                  <th>معدل الذكاء (IQ)</th>
+                  <th>التصنيف</th>
+                  <th>الدرجة</th>
+                  <th>تاريخ التسليم</th>
+                  <th>النتيجة</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (attempt of data.myAttempts; track attempt.attemptId) {
+                  <tr>
+                    <td data-label="رقم المحاولة">#{{ attempt.attemptNumber }}</td>
+                    <td data-label="معدل الذكاء (IQ)"><strong>{{ attempt.iqScore }}</strong></td>
+                    <td data-label="التصنيف"><span class="badge badge-info">{{ attempt.iqClassification }}</span></td>
+                    <td data-label="الدرجة">{{ attempt.rawScore }} / {{ attempt.maxScore }}</td>
+                    <td data-label="تاريخ التسليم">{{ attempt.submittedAt | date: 'short' }}</td>
+                    <td data-label="النتيجة">
+                      <a [routerLink]="['/result', attempt.attemptId]" class="btn btn-secondary btn-sm">
+                        عرض النتيجة
+                      </a>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+
+      <div class="card section-card">
+        <app-bulk-purchase-form
+          [baseExamPrice]="data.baseExamPrice"
+          [paymentInfo]="paymentInfo()"
+          (purchased)="refreshData()"
+        />
+      </div>
+
+      <div class="card section-card">
+        <h3>الأشخاص المضافون ونتائجهم</h3>
+        @if (data.purchasedGrants.length === 0) {
+          <p class="empty-text">لم تقم بشراء تذاكر لأشخاص آخرين بعد.</p>
+        } @else {
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>الاسم</th>
+                  <th>رقم التليفون</th>
+                  <th>حالة التذكرة</th>
+                  <th>معدل IQ</th>
+                  <th>التصنيف</th>
+                  <th>النتيجة</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (grant of data.purchasedGrants; track grant._id) {
+                  <tr>
+                    <td data-label="الاسم">{{ grant.nomineeName }}</td>
+                    <td data-label="رقم التليفون">{{ grant.nomineePhone }}</td>
+                    <td data-label="حالة التذكرة">
+                      <span
+                        class="badge"
+                        [class]="grant.status === 'consumed' ? 'badge-success' : 'badge-info'"
+                      >
+                        {{ grantStatusLabel(grant.status) }}
+                      </span>
+                    </td>
+                    @if (grant.attempt; as att) {
+                      <td data-label="معدل IQ"><strong>{{ att.iqScore }}</strong></td>
+                      <td data-label="التصنيف">{{ att.iqClassification }}</td>
+                      <td data-label="النتيجة">
+                        <a [routerLink]="['/result', att.attemptId]" class="btn btn-secondary btn-sm">
+                          عرض النتيجة
+                        </a>
+                      </td>
+                    } @else {
+                      <td data-label="معدل IQ">—</td>
+                      <td data-label="التصنيف">—</td>
+                      <td data-label="النتيجة">{{ grant.status === 'in_use' ? 'قيد الاختبار' : 'لم يبدأ بعد' }}</td>
+                    }
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
+  }
+</section>

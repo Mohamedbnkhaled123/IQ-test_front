@@ -1,0 +1,27 @@
+<div class="canvas-shell">
+  <div class="canvas-status">
+    <span>التوصيلات المكتملة: {{ connectedCount() }} / {{ requiredPairs() }}</span>
+    <button type="button" class="btn btn-secondary btn-xs" (click)="resetBoard()">
+      مسح اللوحة
+    </button>
+  </div>
+
+  @if (warningMessage()) {
+    <p class="collision-warning" role="alert">{{ warningMessage() }}</p>
+  }
+
+  @if (isComplete()) {
+    <p class="solved-banner">تم توصيل جميع الألوان بنجاح!</p>
+  }
+
+  <canvas
+    #boardCanvas
+    width="520"
+    height="320"
+    class="connect-canvas"
+    (pointerdown)="onPointerDown($event)"
+    (pointermove)="onPointerMove($event)"
+    (pointerup)="onPointerUp($event)"
+    (pointercancel)="onPointerUp($event)"
+  ></canvas>
+</div>

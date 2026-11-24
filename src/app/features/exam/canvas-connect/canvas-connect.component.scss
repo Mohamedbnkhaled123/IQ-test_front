@@ -1,0 +1,55 @@
+.canvas-shell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.canvas-status {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.connect-canvas {
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 520 / 320;
+  background: var(--bg-subtle);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.collision-warning {
+  margin: 0;
+  padding-block: 0.4rem;
+  padding-inline: 0.85rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.solved-banner {
+  margin: 0;
+  padding-block: 0.4rem;
+  padding-inline: 0.85rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-success-soft);
+  color: var(--color-success);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.btn-xs {
+  padding-block: 0.3rem;
+  padding-inline: 0.7rem;
+  font-size: 0.82rem;
+}

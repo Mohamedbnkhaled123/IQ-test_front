@@ -1,0 +1,82 @@
+.sub-card {
+  margin-block-end: var(--space-md);
+}
+
+.editor-head,
+.list-head,
+.options-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  margin-block-end: var(--space-md);
+}
+
+.editor-head h3,
+.list-head h3 {
+  margin: 0;
+}
+
+.q-form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0 var(--space-md);
+}
+
+.full-span {
+  grid-column: 1 / -1;
+}
+
+.checkbox-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding-block: 0.5rem;
+}
+
+.options-editor {
+  background: var(--bg-subtle);
+  padding: var(--space-md);
+  border-radius: var(--radius-sm);
+  margin-block-end: var(--space-md);
+}
+
+.opt-row {
+  display: grid;
+  grid-template-columns: 0.7fr 2fr auto auto;
+  gap: var(--space-sm);
+  align-items: center;
+  margin-block-end: var(--space-xs);
+}
+
+.filter-pills,
+.row-actions {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.toggle-btn {
+  border: none;
+  cursor: pointer;
+}
+
+.btn-xs {
+  padding-block: 0.3rem;
+  padding-inline: 0.7rem;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 900px) {
+  .q-form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .q-form-grid,
+  .opt-row {
+    grid-template-columns: 1fr;
+  }
+}

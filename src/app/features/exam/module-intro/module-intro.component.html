@@ -1,0 +1,30 @@
+<div class="card intro-card">
+  @if (completedModuleTitle()) {
+    <app-alert-banner
+      type="success"
+      [message]="'أحسنت! أنهيت مرحلة (' + completedModuleTitle() + ') — تستعد الآن للانتقال إلى المرحلة التالية.'"
+    />
+  }
+
+  <div class="intro-grid">
+    <div class="cover-frame">
+      <img [src]="moduleInfo().coverImageUrl" [alt]="moduleInfo().title" />
+    </div>
+
+    <div class="intro-details">
+      <span class="ordinal-pill">{{ moduleInfo().ordinal }}</span>
+      <h2>{{ moduleInfo().title }}</h2>
+
+      <div class="meta-chips">
+        <span class="badge badge-info">المدة المقررة: {{ moduleInfo().durationLabel }}</span>
+        <span class="badge badge-success">عدد الأسئلة: {{ questionCount() }}</span>
+      </div>
+
+      <p class="tip-text">{{ moduleInfo().tip }}</p>
+
+      <button type="button" class="btn btn-primary start-btn" (click)="onStartClick()">
+        ابدأ المرحلة الآن
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,128 @@
+<section class="page-container exam-wrap">
+  @if (loading()) {
+    <div class="card">
+      <app-loading-spinner label="جاري تحضير جلسة الاختبار..." />
+    </div>
+  } @else if (submitting()) {
+    <div class="card">
+      <app-loading-spinner label="جاري تصحيح الإجابات واستخراج النتيجة..." />
+    </div>
+  } @else if (errorMessage()) {
+    <div class="card">
+      <app-alert-banner type="danger" [message]="errorMessage()" />
+      <a routerLink="/dashboard" class="btn btn-secondary">العودة للوحة التحكم</a>
+    </div>
+  } @else if (session(); as sess) {
+    <div class="module-stepper" aria-label="مراحل الاختبار الأربعة">
+      @for (mod of modules; track mod.section) {
+        <div class="step-pill" [class]="'step-pill step-' + moduleStatus(mod.section)">
+          <span class="step-ordinal">{{ mod.ordinal }}</span>
+          <span class="step-title">{{ mod.title }}</span>
+        </div>
+      }
+    </div>
+
+    @if (showingModuleIntro()) {
+      <app-module-intro
+        [moduleInfo]="currentModuleMeta()"
+        [questionCount]="currentModuleQuestions().length"
+        [completedModuleTitle]="completedModuleTitle()"
+        (startModule)="onStartModule()"
+      />
+    } @else if (currentQuestion(); as q) {
+      <div class="card exam-card">
+        <div class="exam-topbar">
+          <div>
+            <span class="badge badge-info">{{ currentModuleMeta().ordinal }}: {{ currentModuleMeta().title }}</span>
+            <p class="progress-text">
+              سؤال {{ currentModulePosition() }} من {{ currentModuleQuestions().length }} في هذه المرحلة
+              (إجمالي {{ currentIndex() + 1 }} / {{ sess.questions.length }})
+            </p>
+          </div>
+          <div class="timer-pill" [class.urgent]="secondsLeft() <= 5">
+            <span>الوقت المتبقي:</span>
+            <strong>{{ secondsLeft() }} ث</strong>
+          </div>
+        </div>
+
+        <div class="timer-track" aria-hidden="true">
+          <div class="timer-fill" [style.width.%]="timerPercent()"></div>
+        </div>
+
+        <h2 class="question-prompt">{{ q.prompt }}</h2>
+
+        @if (q.imageUrl) {
+          <div class="question-image-box">
+            <img [src]="q.imageUrl" alt="صورة السؤال" />
+          </div>
+        }
+
+        @switch (q.questionType) {
+          @case ('memory_preview') {
+            <p class="hint-text">احفظ مواقع الأشكال جيداً، سينتقل الاختبار تلقائياً بعد انتهاء المؤقت.</p>
+          }
+
+          @case ('memory_grid') {
+            <app-memory-grid
+              [rows]="q.gridConfig?.rows ?? 2"
+              [cols]="q.gridConfig?.cols ?? 3"
+              [selectedCellIndex]="selectedCellIndex()"
+              (cellSelected)="onCellSelected($event)"
+            />
+          }
+
+          @case ('canvas_connect') {
+            <app-canvas-connect
+              [colors]="q.canvasConfig?.colors ?? ['blue', 'yellow', 'red', 'green']"
+              [requiredPairs]="q.canvasConfig?.requiredPairs ?? 4"
+              (solved)="onCanvasSolved($event)"
+            />
+          }
+
+          @case ('mcq') {
+            <div class="options-list">
+              @for (opt of q.options; track opt.key) {
+                <button
+                  type="button"
+                  class="option-btn"
+                  [class.selected]="selectedOptionKey() === opt.key"
+                  (click)="selectOption(opt.key)"
+                >
+                  {{ opt.label }}
+                </button>
+              }
+            </div>
+          }
+
+          @default {
+            <div class="form-field answer-field">
+              <label for="answer-input">إجابتك</label>
+              <input
+                id="answer-input"
+                type="text"
+                class="form-control"
+                [appInputConstraint]="q.inputConstraint"
+                [value]="textAnswer()"
+                (input)="onTextInput($event)"
+                placeholder="اكتب إجابتك هنا"
+                autocomplete="off"
+              />
+              @if (q.inputConstraint === 'numbers_only') {
+                <small class="constraint-note">يُسمح بإدخال الأرقام فقط.</small>
+              } @else if (q.inputConstraint === 'letters_only') {
+                <small class="constraint-note">يُسمح بإدخال الحروف فقط بدون أرقام.</small>
+              }
+            </div>
+          }
+        }
+
+        <div class="exam-footer">
+          <span class="no-back-note">لا يمكن الرجوع للأسئلة السابقة</span>
+          <button type="button" class="btn btn-primary" (click)="advanceQuestion()">
+            {{ isLastQuestion() ? 'تسليم الاختبار وعرض النتيجة' : 'السؤال التالي' }}
+          </button>
+        </div>
+      </div>
+    }
+  }
+</section>

@@ -1,0 +1,73 @@
+<section class="page-container">
+  <div class="admin-header">
+    <div>
+      <h2>لوحة تحكم الإدارة</h2>
+      <p class="subtitle">إدارة المسجلين، الأسئلة، التذاكر المجانية واليدوية، وإعدادات المنصة.</p>
+    </div>
+    <button type="button" class="btn btn-secondary" (click)="reloadOverview()">
+      تحديث البيانات
+    </button>
+  </div>
+
+  <app-alert-banner type="danger" [message]="errorMessage()" />
+
+  @if (overview(); as data) {
+    <div class="stats-grid">
+      <div class="card stat-card">
+        <span>إجمالي المسجلين</span>
+        <strong>{{ data.stats.totalUsers }}</strong>
+      </div>
+      <div class="card stat-card">
+        <span>المحاولات المكتملة</span>
+        <strong>{{ data.stats.totalAttempts }}</strong>
+      </div>
+      <div class="card stat-card">
+        <span>التذاكر المتاحة</span>
+        <strong>{{ data.stats.availableGrants }}</strong>
+      </div>
+      <div class="card stat-card">
+        <span>إيرادات الإيصالات المقبولة</span>
+        <strong>{{ data.stats.totalRevenue }} ج.م</strong>
+      </div>
+    </div>
+  }
+
+  <div class="admin-tabs" role="tablist">
+    <button type="button" class="tab-btn" [class.active]="activeTab() === 'users'" (click)="switchTab('users')">
+      المسجلون والمحاولات + التفعيل اليدوي
+    </button>
+    <button type="button" class="tab-btn" [class.active]="activeTab() === 'questions'" (click)="switchTab('questions')">
+      إدارة الأسئلة (CRUD)
+    </button>
+    <button type="button" class="tab-btn" [class.active]="activeTab() === 'grants'" (click)="switchTab('grants')">
+      الإضافة المجانية والتذاكر
+    </button>
+    <button type="button" class="tab-btn" [class.active]="activeTab() === 'settings'" (click)="switchTab('settings')">
+      الإعدادات وسجل الدفع
+    </button>
+  </div>
+
+  @if (loading() && !overview()) {
+    <div class="card">
+      <app-loading-spinner label="جاري تحميل لوحة الإدارة..." />
+    </div>
+  } @else {
+    @switch (activeTab()) {
+      @case ('users') {
+        <app-users-grants [overview]="overview()" mode="users" (changed)="reloadOverview()" />
+      }
+      @case ('questions') {
+        <app-questions-crud />
+      }
+      @case ('grants') {
+        <app-users-grants [overview]="overview()" mode="grants" (changed)="reloadOverview()" />
+      }
+      @case ('settings') {
+        <app-settings-payments
+          [payments]="overview()?.payments ?? []"
+          (settingsSaved)="reloadOverview()"
+        />
+      }
+    }
+  }
+</section>

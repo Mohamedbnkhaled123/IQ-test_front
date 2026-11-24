@@ -1,0 +1,23 @@
+.sub-card {
+  margin-block-end: var(--space-md);
+}
+
+.sub-card h3 {
+  margin: 0 0 var(--space-md);
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 var(--space-md);
+}
+
+.full-span {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 680px) {
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+}

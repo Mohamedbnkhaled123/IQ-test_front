@@ -1,0 +1,97 @@
+<section class="page-container payment-wrap">
+  @if (loading()) {
+    <div class="card">
+      <app-loading-spinner label="جاري تحميل بيانات الدفع..." />
+    </div>
+  } @else {
+    @if (dashboard()?.hasAvailableGrant) {
+      <div class="card ready-card">
+        <h2>لديك تذكرة اختبار مفعّلة بالفعل!</h2>
+        <p>لا تحتاج للدفع الآن، يمكنك بدء الاختبار مباشرة.</p>
+        <a routerLink="/exam" class="btn btn-primary">ابدأ الاختبار الآن</a>
+      </div>
+    } @else {
+      <div class="card payment-card">
+        <div class="payment-header">
+          <div>
+            <h2>الدفع المسبق لفتح الاختبار</h2>
+            <p class="subtitle">قم بالتحويل إلى أحد الحسابات المعتمدة التالية ثم ارفع صورة الإيصال للتحقق الفوري.</p>
+          </div>
+          <div class="amount-box">
+            <span>المبلغ المطلوب</span>
+            <strong>{{ requiredAmount() }} ج.م</strong>
+          </div>
+        </div>
+
+        @if (paymentInfo(); as info) {
+          <div class="receivers-grid">
+            <div class="receiver-item">
+              <h4>تحويل InstaPay</h4>
+              <p><strong>العنوان:</strong> {{ info.instapayHandle }}</p>
+              <p><strong>رقم الهاتف:</strong> {{ info.instapayPhone }}</p>
+            </div>
+            <div class="receiver-item">
+              <h4>{{ info.walletProvider }}</h4>
+              <p><strong>رقم المحفظة:</strong> {{ info.walletNumber }}</p>
+            </div>
+          </div>
+        }
+
+        @if (failureInfo(); as fail) {
+          <app-alert-banner
+            type="danger"
+            title="لم يتم اعتماد الإيصال"
+            [message]="fail.reason || fail.message"
+          />
+          @if (fail.whatsappUrl || fallbackWhatsappUrl()) {
+            <a
+              class="btn btn-whatsapp wa-btn"
+              [href]="fail.whatsappUrl || fallbackWhatsappUrl()"
+              target="_blank"
+              rel="noopener"
+            >
+              تواصل مع الأدمن عبر واتساب للتفعيل اليدوي
+            </a>
+          }
+        }
+
+        <div class="form-field">
+          <label for="pay-method">طريقة الدفع المستخدمة</label>
+          <select id="pay-method" class="form-control" [value]="method()" (change)="onMethodChange($event)">
+            <option value="instapay">InstaPay</option>
+            <option value="wallet">محفظة إلكترونية</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="pay-receipt">صورة إيصال التحويل (JPG / PNG / WEBP)</label>
+          <input
+            id="pay-receipt"
+            type="file"
+            class="form-control"
+            accept="image/jpeg,image/png,image/webp"
+            (change)="onFileSelected($event)"
+          />
+        </div>
+
+        @if (previewUrl(); as src) {
+          <div class="receipt-preview">
+            <img [src]="src" alt="معاينة إيصال التحويل" />
+          </div>
+        }
+
+        <div class="pay-actions">
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="submitting()"
+            (click)="submitPayment()"
+          >
+            {{ submitting() ? 'جاري فحص الإيصال بالذكاء الاصطناعي...' : 'تأكيد الدفع والانتقال للاختبار' }}
+          </button>
+          <a routerLink="/dashboard" class="btn btn-secondary">العودة للوحة التحكم</a>
+        </div>
+      </div>
+    }
+  }
+</section>

@@ -1,0 +1,127 @@
+<section class="page-container landing-grid">
+  <div class="hero-card">
+    <div class="hero-brand-row">
+      <app-brand-logo size="lg" />
+      <div>
+        <span class="hero-tag">نسخة المفحوص المعتمدة</span>
+        <h1>اختبار الذكاء وتحليل الشخصية (من عمر 25 لما فوق 40 عام)</h1>
+      </div>
+    </div>
+
+    <div class="module-pills">
+      @for (mod of modules; track mod.section) {
+        <div class="module-pill">
+          <strong>{{ mod.ordinal }}: {{ mod.title }}</strong>
+          <span>{{ mod.durationLabel }}</span>
+        </div>
+      }
+    </div>
+
+    <ul class="hero-points">
+      <li>تقييم علمي متدرج عبر 4 مراحل مستقلة بمؤقت زمني لكل سؤال</li>
+      <li>تحليل شخصية متكامل لـ 10 صفات أساسية فور تسليم الاختبار</li>
+      <li>دفع إلكتروني آمن عبر InstaPay أو المحافظ المصرية مع تفعيل فوري</li>
+    </ul>
+  </div>
+
+  <div class="card auth-card">
+    <div class="tab-bar" role="tablist">
+      <button
+        type="button"
+        role="tab"
+        class="tab-btn"
+        [class.active]="activeTab() === 'register'"
+        (click)="switchTab('register')"
+      >
+        تسجيل بيانات جديد
+      </button>
+      <button
+        type="button"
+        role="tab"
+        class="tab-btn"
+        [class.active]="activeTab() === 'login'"
+        (click)="switchTab('login')"
+      >
+        دخول سريع (مسجل مسبقاً)
+      </button>
+    </div>
+
+    <app-alert-banner type="danger" [message]="errorMessage()" />
+
+    @if (activeTab() === 'register') {
+      <form [formGroup]="registerForm" (ngSubmit)="submitRegister()">
+        <div class="form-field">
+          <label for="reg-name">الاسم الكامل</label>
+          <input id="reg-name" type="text" class="form-control" formControlName="name" placeholder="اكتب اسمك ثلاثياً" />
+        </div>
+
+        <div class="form-field">
+          <label for="reg-phone">رقم التليفون</label>
+          <input id="reg-phone" type="tel" class="form-control" formControlName="phone" placeholder="01xxxxxxxxx" />
+        </div>
+
+        <div class="dob-row">
+          <div class="form-field">
+            <label for="reg-dob">تاريخ الميلاد</label>
+            <input
+              id="reg-dob"
+              type="date"
+              class="form-control"
+              formControlName="dateOfBirth"
+              (input)="onDateOfBirthInput($event)"
+            />
+          </div>
+          <div class="age-box">
+            <span class="age-label">العمر الزمني</span>
+            <strong class="age-value">
+              @if (calculatedAge() !== null) {
+                {{ calculatedAge() }} سنة
+              } @else {
+                —
+              }
+            </strong>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="reg-occupation">المهنة</label>
+          <input id="reg-occupation" type="text" class="form-control" formControlName="occupation" placeholder="مثال: مهندس / طبيب / مدير" />
+        </div>
+
+        <div class="form-field">
+          <label for="reg-hobbies">الهوايات</label>
+          <input id="reg-hobbies" type="text" class="form-control" formControlName="hobbies" placeholder="مثال: القراءة، الشطرنج، الرياضة" />
+        </div>
+
+        <div class="form-field">
+          <label for="reg-iq">ما تصنيفك لذكائك؟</label>
+          <select id="reg-iq" class="form-control" formControlName="selfIqRating">
+            @for (rating of iqRatings; track rating) {
+              <option [value]="rating">{{ rating }}</option>
+            }
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary full-btn" [disabled]="loading()">
+          {{ loading() ? 'جاري التسجيل...' : 'تسجيل والمتابعة للوحة التحكم' }}
+        </button>
+      </form>
+    } @else {
+      <form [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+        <div class="form-field">
+          <label for="login-name">الاسم</label>
+          <input id="login-name" type="text" class="form-control" formControlName="name" placeholder="الاسم المسجل" />
+        </div>
+
+        <div class="form-field">
+          <label for="login-phone">رقم التليفون</label>
+          <input id="login-phone" type="tel" class="form-control" formControlName="phone" placeholder="01xxxxxxxxx" />
+        </div>
+
+        <button type="submit" class="btn btn-primary full-btn" [disabled]="loading()">
+          {{ loading() ? 'جاري الدخول...' : 'دخول إلى لوحة التحكم' }}
+        </button>
+      </form>
+    }
+  </div>
+</section>

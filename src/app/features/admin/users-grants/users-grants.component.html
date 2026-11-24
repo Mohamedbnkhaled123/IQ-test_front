@@ -1,0 +1,138 @@
+<app-alert-banner type="success" [message]="successMessage()" />
+<app-alert-banner type="danger" [message]="errorMessage()" />
+
+@if (overview(); as data) {
+  @if (mode() === 'users') {
+    <div class="card sub-card">
+      <h3>المسجلون في المنصة</h3>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>الاسم</th>
+              <th>رقم التليفون</th>
+              <th>العمر</th>
+              <th>المهنة</th>
+              <th>التصنيف الذاتي</th>
+              <th>المحاولات</th>
+              <th>دعم واتساب</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of data.users; track user._id) {
+              <tr>
+                <td data-label="الاسم"><strong>{{ user.name }}</strong></td>
+                <td data-label="رقم التليفون">{{ user.phone }}</td>
+                <td data-label="العمر">{{ user.age }}</td>
+                <td data-label="المهنة">{{ user.occupation }}</td>
+                <td data-label="التصنيف الذاتي">{{ user.selfIqRating }}</td>
+                <td data-label="المحاولات">{{ user.completedAttemptsCount }}</td>
+                <td data-label="دعم واتساب">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-xs"
+                    [disabled]="busy()"
+                    (click)="grantManualAccess(user)"
+                  >
+                    تفعيل اختبار يدوياً
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card sub-card">
+      <h3>سجل المحاولات المكتملة</h3>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>اسم المفحوص</th>
+              <th>رقم المحاولة</th>
+              <th>الدرجة الخام</th>
+              <th>معدل IQ</th>
+              <th>التصنيف</th>
+              <th>تاريخ التسليم</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (att of data.attempts; track att.attemptId) {
+              <tr>
+                <td data-label="اسم المفحوص"><strong>{{ att.examineeName }}</strong></td>
+                <td data-label="رقم المحاولة">#{{ att.attemptNumber }}</td>
+                <td data-label="الدرجة الخام">{{ att.rawScore }} / {{ att.maxScore }}</td>
+                <td data-label="معدل IQ"><strong>{{ att.iqScore }}</strong></td>
+                <td data-label="التصنيف"><span class="badge badge-info">{{ att.iqClassification }}</span></td>
+                <td data-label="تاريخ التسليم">{{ att.submittedAt | date: 'short' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  } @else {
+    <div class="card sub-card">
+      <h3>إضافة تذكرة اختبار مجانية (بدون دفع)</h3>
+      <form [formGroup]="grantForm" (ngSubmit)="submitComplimentaryGrant()" class="grant-form">
+        <input type="text" class="form-control" formControlName="nomineeName" placeholder="الاسم الكامل للمرشح" />
+        <input type="tel" class="form-control" formControlName="nomineePhone" placeholder="رقم التليفون (01xxxxxxxxx)" />
+        <button type="submit" class="btn btn-primary" [disabled]="busy()">
+          إصدار تذكرة مجانية
+        </button>
+      </form>
+    </div>
+
+    <div class="card sub-card">
+      <h3>جميع التذاكر الصادرة</h3>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>الاسم</th>
+              <th>التليفون</th>
+              <th>المصدر</th>
+              <th>المبلغ</th>
+              <th>الحالة</th>
+              <th>إجراء</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (grant of data.grants; track grant._id) {
+              <tr>
+                <td data-label="الاسم"><strong>{{ grant.nomineeName }}</strong></td>
+                <td data-label="التليفون">{{ grant.nomineePhone }}</td>
+                <td data-label="المصدر">{{ sourceLabel(grant.source) }}</td>
+                <td data-label="المبلغ">{{ grant.amountPaid }} ج.م</td>
+                <td data-label="الحالة">
+                  <span
+                    class="badge"
+                    [class]="grant.status === 'available' ? 'badge-success' : 'badge-info'"
+                  >
+                    {{ statusLabel(grant.status) }}
+                  </span>
+                </td>
+                <td data-label="إجراء">
+                  @if (grant.status === 'available') {
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-xs"
+                      [disabled]="busy()"
+                      (click)="removeGrant(grant._id)"
+                    >
+                      حذف
+                    </button>
+                  } @else {
+                    <span>—</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+}

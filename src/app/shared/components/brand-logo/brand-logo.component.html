@@ -1,0 +1,54 @@
+<div class="logo-emblem" [class]="'logo-emblem size-' + size()" aria-hidden="true">
+  <svg viewBox="0 0 120 120" class="emblem-svg" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="platinumGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" class="grad-silver-start" />
+        <stop offset="50%" class="grad-silver-mid" />
+        <stop offset="100%" class="grad-silver-end" />
+      </linearGradient>
+      <linearGradient id="cyanGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" class="grad-cyan-start" />
+        <stop offset="100%" class="grad-cyan-end" />
+      </linearGradient>
+    </defs>
+
+    <!-- Outer Tech Circuit Ring -->
+    <circle cx="60" cy="60" r="54" fill="none" stroke="url(#platinumGrad)" stroke-width="2" stroke-dasharray="10 6" />
+    <circle cx="60" cy="60" r="46" fill="none" stroke="url(#cyanGlowGrad)" stroke-width="1.5" opacity="0.7" />
+
+    <!-- Circuit Nodes -->
+    <circle cx="60" cy="6" r="3" class="node-cyan" />
+    <circle cx="114" cy="60" r="3" class="node-cyan" />
+    <circle cx="60" cy="114" r="3" class="node-cyan" />
+    <circle cx="6" cy="60" r="3" class="node-cyan" />
+
+    <!-- Stylized Brain Silhouette Left & Right -->
+    <path
+      d="M58 26 C42 26 31 36 31 50 C25 54 25 66 32 72 C32 82 42 90 56 90 L58 90 Z"
+      fill="none"
+      stroke="url(#platinumGrad)"
+      stroke-width="3"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M62 26 C78 26 89 36 89 50 C95 54 95 66 88 72 C88 82 78 90 64 90 L62 90 Z"
+      fill="none"
+      stroke="url(#platinumGrad)"
+      stroke-width="3"
+      stroke-linejoin="round"
+    />
+
+    <!-- DNA Helix Center Axis -->
+    <path d="M53 34 C67 42 53 52 67 60 C53 68 67 78 53 86" fill="none" stroke="url(#cyanGlowGrad)" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M67 34 C53 42 67 52 53 60 C67 68 53 78 67 86" fill="none" stroke="url(#platinumGrad)" stroke-width="2.5" stroke-linecap="round" />
+    <line x1="55" y1="40" x2="65" y2="40" stroke="url(#cyanGlowGrad)" stroke-width="1.6" />
+    <line x1="55" y1="60" x2="65" y2="60" stroke="url(#cyanGlowGrad)" stroke-width="1.6" />
+    <line x1="55" y1="80" x2="65" y2="80" stroke="url(#cyanGlowGrad)" stroke-width="1.6" />
+
+    <!-- Precision Gears -->
+    <circle cx="42" cy="52" r="6" fill="none" stroke="url(#cyanGlowGrad)" stroke-width="2.2" stroke-dasharray="3 2" />
+    <circle cx="42" cy="52" r="2" class="node-silver" />
+    <circle cx="78" cy="68" r="7" fill="none" stroke="url(#platinumGrad)" stroke-width="2.2" stroke-dasharray="3 2" />
+    <circle cx="78" cy="68" r="2.2" class="node-cyan" />
+  </svg>
+</div>

@@ -1,0 +1,92 @@
+<div class="card sub-card">
+  <h3>إعدادات الاختبار والتسعير ومقياس الذكاء</h3>
+
+  <app-alert-banner type="success" [message]="successMessage()" />
+  <app-alert-banner type="danger" [message]="errorMessage()" />
+
+  <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="settings-grid">
+    <div class="form-field full-span">
+      <label for="set-title">عنوان الاختبار</label>
+      <input id="set-title" type="text" class="form-control" formControlName="examTitle" />
+    </div>
+
+    <div class="form-field">
+      <label for="set-price">السعر الأساسي (ج.م)</label>
+      <input id="set-price" type="number" class="form-control" formControlName="baseExamPrice" />
+    </div>
+
+    <div class="form-field">
+      <label for="set-mult">مضاعف سعر الإعادة</label>
+      <input id="set-mult" type="number" class="form-control" formControlName="retakeMultiplier" />
+    </div>
+
+    <div class="form-field">
+      <label for="set-min">أدنى درجة IQ</label>
+      <input id="set-min" type="number" class="form-control" formControlName="iqScaleMin" />
+    </div>
+
+    <div class="form-field">
+      <label for="set-max">أقصى درجة IQ</label>
+      <input id="set-max" type="number" class="form-control" formControlName="iqScaleMax" />
+    </div>
+
+    <div class="form-field">
+      <label for="set-low">حد أقل من المتوسط (lowMax)</label>
+      <input id="set-low" type="number" class="form-control" formControlName="lowMax" />
+    </div>
+
+    <div class="form-field">
+      <label for="set-avg">حد الذكاء المتوسط (averageMax)</label>
+      <input id="set-avg" type="number" class="form-control" formControlName="averageMax" />
+    </div>
+
+    <div class="full-span">
+      <button type="submit" class="btn btn-primary" [disabled]="saving()">
+        {{ saving() ? 'جاري الحفظ...' : 'حفظ الإعدادات' }}
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="card sub-card">
+  <h3>سجل تدقيق المدفوعات بالذكاء الاصطناعي (Gemini AI)</h3>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>المشتري</th>
+          <th>النوع</th>
+          <th>الطريقة</th>
+          <th>المطلوب / المرصود</th>
+          <th>الرقم المرجعي</th>
+          <th>ثقة AI</th>
+          <th>الحالة</th>
+          <th>السبب / الملاحظة</th>
+          <th>التاريخ</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (pay of payments(); track pay._id) {
+          <tr>
+            <td data-label="المشتري">{{ buyerDisplay(pay) }}</td>
+            <td data-label="النوع">{{ pay.paymentType === 'bulk_purchase' ? 'شراء جماعي' : 'فردي' }}</td>
+            <td data-label="الطريقة">{{ pay.method === 'instapay' ? 'InstaPay' : 'محفظة' }}</td>
+            <td data-label="المطلوب / المرصود">{{ pay.expectedAmount }} / {{ pay.detectedAmount }} ج.م</td>
+            <td data-label="الرقم المرجعي">{{ pay.referenceId || '—' }}</td>
+            <td data-label="ثقة AI">{{ (pay.aiConfidence * 100).toFixed(0) }}%</td>
+            <td data-label="الحالة">
+              <span
+                class="badge"
+                [class]="pay.status === 'verified' ? 'badge-success' : 'badge-danger'"
+              >
+                {{ pay.status === 'verified' ? 'مقبول' : 'مرفوض' }}
+              </span>
+            </td>
+            <td data-label="السبب / الملاحظة">{{ pay.aiReason || '—' }}</td>
+            <td data-label="التاريخ">{{ pay.createdAt | date: 'short' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

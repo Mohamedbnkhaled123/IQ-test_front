@@ -1,0 +1,25 @@
+.memory-grid {
+  display: grid;
+  gap: var(--space-sm);
+  max-width: 460px;
+  margin-inline: auto;
+  margin-block: var(--space-md);
+}
+
+.grid-cell {
+  aspect-ratio: 4 / 3;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.grid-cell.selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}

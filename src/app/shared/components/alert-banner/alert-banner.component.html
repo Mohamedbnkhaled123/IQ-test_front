@@ -1,0 +1,8 @@
+@if (message()) {
+  <div class="alert" [class]="'alert alert-' + type()" role="alert">
+    @if (title()) {
+      <strong class="alert-title">{{ title() }}</strong>
+    }
+    <p class="alert-message">{{ message() }}</p>
+  </div>
+}

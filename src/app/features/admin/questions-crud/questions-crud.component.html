@@ -1,0 +1,178 @@
+<app-alert-banner type="success" [message]="successMessage()" />
+<app-alert-banner type="danger" [message]="errorMessage()" />
+
+<div class="card sub-card">
+  <div class="editor-head">
+    <h3>{{ editingId() ? 'تعديل سؤال' : 'إضافة سؤال جديد' }}</h3>
+    @if (editingId()) {
+      <button type="button" class="btn btn-secondary btn-xs" (click)="resetEditor()">
+        إلغاء التعديل
+      </button>
+    }
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="saveQuestion()" class="q-form-grid">
+    <div class="form-field">
+      <label for="q-sec">القسم (1–4)</label>
+      <input id="q-sec" type="number" class="form-control" formControlName="section" />
+    </div>
+
+    <div class="form-field">
+      <label for="q-sec-title">عنوان القسم</label>
+      <input id="q-sec-title" type="text" class="form-control" formControlName="sectionTitle" />
+    </div>
+
+    <div class="form-field">
+      <label for="q-order">الترتيب</label>
+      <input id="q-order" type="number" class="form-control" formControlName="order" />
+    </div>
+
+    <div class="form-field">
+      <label for="q-type">نوع السؤال</label>
+      <select id="q-type" class="form-control" formControlName="questionType">
+        <option value="text">نصي (text)</option>
+        <option value="mcq">اختيار متعدد (mcq)</option>
+        <option value="memory_preview">عرض ذاكرة (memory_preview)</option>
+        <option value="memory_grid">شبكة ذاكرة (memory_grid)</option>
+        <option value="canvas_connect">توصيل ألوان (canvas_connect)</option>
+      </select>
+    </div>
+
+    <div class="form-field">
+      <label for="q-constraint">قيود الإدخال</label>
+      <select id="q-constraint" class="form-control" formControlName="inputConstraint">
+        <option value="any">الكل (any)</option>
+        <option value="numbers_only">أرقام فقط (numbers_only)</option>
+        <option value="letters_only">حروف فقط (letters_only)</option>
+      </select>
+    </div>
+
+    <div class="form-field">
+      <label for="q-time">المؤقت (ثانية)</label>
+      <input id="q-time" type="number" class="form-control" formControlName="timeLimitSeconds" />
+    </div>
+
+    <div class="form-field">
+      <label for="q-pts">الدرجة</label>
+      <input id="q-pts" type="number" class="form-control" formControlName="points" />
+    </div>
+
+    <div class="form-field">
+      <label for="q-active">حالة التفعيل</label>
+      <label class="checkbox-line">
+        <input id="q-active" type="checkbox" formControlName="isActive" />
+        <span>مفعّل داخل الاختبار</span>
+      </label>
+    </div>
+
+    <div class="form-field full-span">
+      <label for="q-prompt">نص السؤال</label>
+      <textarea id="q-prompt" rows="2" class="form-control" formControlName="prompt"></textarea>
+    </div>
+
+    <div class="form-field">
+      <label for="q-img">رابط الصورة (أو ارفع ملفاً)</label>
+      <input id="q-img" type="text" class="form-control" formControlName="imageUrl" placeholder="/exam-images/..." />
+    </div>
+
+    <div class="form-field">
+      <label for="q-upload">رفع صورة جديدة</label>
+      <input id="q-upload" type="file" class="form-control" accept="image/*" (change)="onImageFileSelected($event)" />
+      @if (uploading()) {
+        <small>جاري رفع الصورة...</small>
+      }
+    </div>
+
+    <div class="form-field full-span">
+      <label for="q-accepted">الإجابات النصية المقبولة (كل إجابة في سطر أو مفصولة بفاصلة)</label>
+      <textarea id="q-accepted" rows="2" class="form-control" formControlName="acceptedAnswersText"></textarea>
+    </div>
+
+    <div class="form-field full-span">
+      <label for="q-note">ملاحظة للأدمن</label>
+      <input id="q-note" type="text" class="form-control" formControlName="adminNote" />
+    </div>
+
+    @if (form.controls.questionType.value === 'mcq') {
+      <div class="full-span options-editor">
+        <div class="options-head">
+          <strong>اختيارات MCQ</strong>
+          <button type="button" class="btn btn-secondary btn-xs" (click)="addOption()">+ إضافة خيار</button>
+        </div>
+        @for (opt of editingOptions(); track $index) {
+          <div class="opt-row">
+            <input type="text" class="form-control" placeholder="المفتاح (a)" [value]="opt.key" (input)="updateOption($index, 'key', $event)" />
+            <input type="text" class="form-control" placeholder="نص الخيار" [value]="opt.label" (input)="updateOption($index, 'label', $event)" />
+            <label class="checkbox-line">
+              <input type="checkbox" [checked]="!!opt.isCorrect" (change)="updateOption($index, 'isCorrect', $event)" />
+              <span>صحيح</span>
+            </label>
+            <button type="button" class="btn btn-danger btn-xs" (click)="removeOption($index)">حذف</button>
+          </div>
+        }
+      </div>
+    }
+
+    <div class="full-span">
+      <button type="submit" class="btn btn-primary" [disabled]="saving()">
+        {{ saving() ? 'جاري الحفظ...' : (editingId() ? 'تحديث السؤال' : 'إضافة السؤال') }}
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="card sub-card">
+  <div class="list-head">
+    <h3>بنك الأسئلة ({{ filteredQuestions().length }})</h3>
+    <div class="filter-pills">
+      <button type="button" class="btn btn-xs" [class]="sectionFilter() === 0 ? 'btn-primary' : 'btn-secondary'" (click)="setFilter(0)">الكل</button>
+      <button type="button" class="btn btn-xs" [class]="sectionFilter() === 1 ? 'btn-primary' : 'btn-secondary'" (click)="setFilter(1)">ق1</button>
+      <button type="button" class="btn btn-xs" [class]="sectionFilter() === 2 ? 'btn-primary' : 'btn-secondary'" (click)="setFilter(2)">ق2</button>
+      <button type="button" class="btn btn-xs" [class]="sectionFilter() === 3 ? 'btn-primary' : 'btn-secondary'" (click)="setFilter(3)">ق3</button>
+      <button type="button" class="btn btn-xs" [class]="sectionFilter() === 4 ? 'btn-primary' : 'btn-secondary'" (click)="setFilter(4)">ق4</button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <app-loading-spinner label="جاري تحميل الأسئلة..." />
+  } @else {
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ق / ت</th>
+            <th>السؤال</th>
+            <th>النوع</th>
+            <th>الوقت / الدرجة</th>
+            <th>الحالة</th>
+            <th>إجراءات</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (q of filteredQuestions(); track q._id) {
+            <tr>
+              <td data-label="القسم والترتيب">ق{{ q.section }} - #{{ q.order }}</td>
+              <td data-label="السؤال">{{ q.prompt }}</td>
+              <td data-label="النوع">{{ q.questionType }}</td>
+              <td data-label="الوقت / الدرجة">{{ q.timeLimitSeconds }}ث / {{ q.points }}د</td>
+              <td data-label="الحالة">
+                <button
+                  type="button"
+                  class="badge toggle-btn"
+                  [class]="q.isActive ? 'badge-success' : 'badge-warning'"
+                  (click)="toggleActive(q)"
+                >
+                  {{ q.isActive ? 'مفعّل' : 'معطّل' }}
+                </button>
+              </td>
+              <td data-label="إجراءات" class="row-actions">
+                <button type="button" class="btn btn-secondary btn-xs" (click)="startEdit(q)">تعديل</button>
+                <button type="button" class="btn btn-danger btn-xs" (click)="deleteQuestion(q._id)">حذف</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

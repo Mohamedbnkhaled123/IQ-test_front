@@ -1,0 +1,32 @@
+<header class="navbar">
+  <div class="navbar-inner">
+    <a class="brand" routerLink="/">
+      <app-brand-logo size="sm" />
+      <span class="brand-text">منصة الذكاء وتحليل الشخصية</span>
+    </a>
+
+    <nav class="nav-links" aria-label="التنقل الرئيسي">
+      <button type="button" class="theme-btn" (click)="toggleTheme()">
+        {{ isDark() ? 'الوضع النهاري' : 'الوضع الليلي' }}
+      </button>
+
+      @if (isUserLoggedIn()) {
+        <a routerLink="/dashboard" routerLinkActive="active-link">لوحة التحكم</a>
+        <a routerLink="/payment" routerLinkActive="active-link">الدفع</a>
+        @if (currentUser(); as user) {
+          <span class="user-chip">{{ user.name }}</span>
+        }
+        <button type="button" class="btn-link" (click)="logoutUser()">خروج</button>
+      } @else {
+        <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+          الدخول والتسجيل
+        </a>
+      }
+
+      <a routerLink="/admin" routerLinkActive="active-link" class="admin-link">لوحة الإدارة</a>
+      @if (isAdminLoggedIn()) {
+        <button type="button" class="btn-link" (click)="logoutAdmin()">خروج الأدمن</button>
+      }
+    </nav>
+  </div>
+</header>

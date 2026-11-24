@@ -1,0 +1,70 @@
+<section class="page-container result-wrap">
+  @if (loading()) {
+    <div class="card">
+      <app-loading-spinner label="جاري تحميل النتيجة النهائية..." />
+    </div>
+  } @else if (errorMessage()) {
+    <div class="card">
+      <app-alert-banner type="danger" [message]="errorMessage()" />
+      <a routerLink="/dashboard" class="btn btn-secondary">العودة للوحة التحكم</a>
+    </div>
+  } @else if (result(); as res) {
+    <div class="card hero-result">
+      <div class="iq-circle">
+        <span class="iq-caption">معدل الذكاء IQ</span>
+        <strong class="iq-number">{{ res.iqScore }}</strong>
+      </div>
+      <div class="iq-meta">
+        <h2>{{ res.examineeName }}</h2>
+        <span class="badge badge-info classification-badge">{{ res.iqClassification }}</span>
+        <p class="meta-line">
+          المحاولة #{{ res.attemptNumber }} — الدرجة الكلية: {{ res.rawScore }} / {{ res.maxScore }}
+        </p>
+        <p class="meta-line">تاريخ التسليم: {{ res.submittedAt | date: 'medium' }}</p>
+      </div>
+    </div>
+
+    <div class="sections-grid">
+      <div class="card score-box">
+        <h4>المهارات والتركيز والذاكرة البصرية</h4>
+        <strong>{{ res.sectionScores.section1.earned }} / {{ res.sectionScores.section1.max }}</strong>
+      </div>
+      <div class="card score-box">
+        <h4>الذكاء التخيلي والتفكير المنطقي</h4>
+        <strong>{{ res.sectionScores.section2.earned }} / {{ res.sectionScores.section2.max }}</strong>
+      </div>
+      <div class="card score-box">
+        <h4>الحسابات الذهنية</h4>
+        <strong>{{ res.sectionScores.section3.earned }} / {{ res.sectionScores.section3.max }}</strong>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>تقرير تحليل الشخصية (10 صفات)</h3>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>الصفة الشخصية</th>
+              <th>التحليل المستخلص</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (trait of res.personalityProfile; track trait.traitName) {
+              <tr>
+                <td data-label="#">{{ $index + 1 }}</td>
+                <td data-label="الصفة الشخصية"><strong>{{ trait.traitName }}</strong></td>
+                <td data-label="التحليل المستخلص"><span class="badge badge-success">{{ trait.traitValue }}</span></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="result-actions">
+        <a routerLink="/dashboard" class="btn btn-primary">العودة إلى لوحة التحكم</a>
+      </div>
+    </div>
+  }
+</section>
