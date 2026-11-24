@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://iq-test-back.vercel.app/api/:path*"
+    },
+    {
+      "source": "/exam-images/:path*",
+      "destination": "https://iq-test-back.vercel.app/exam-images/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
