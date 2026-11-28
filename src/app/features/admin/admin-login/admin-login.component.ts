@@ -19,11 +19,12 @@ export class AdminLoginComponent implements OnInit {
 
   readonly loading = signal<boolean>(false);
   readonly demoMode = signal<boolean>(false);
+  readonly needsSetup = signal<boolean>(false);
   readonly errorMessage = signal<string>('');
 
   readonly loginForm = this.fb.nonNullable.group({
-    username: ['', [Validators.required]],
-    password: ['', [Validators.required]]
+    username: ['', [Validators.required, Validators.minLength(2)]],
+    password: ['', [Validators.required, Validators.minLength(4)]]
   });
 
   ngOnInit(): void {
@@ -36,7 +37,9 @@ export class AdminLoginComponent implements OnInit {
         if (cfg.adminNoPasswordMode) {
           this.demoMode.set(true);
           this.enterDemoAdmin();
+          return;
         }
+        this.needsSetup.set(cfg.adminConfigured === false);
       },
       error: () => {
         // Keep manual login form available if config fetch fails.

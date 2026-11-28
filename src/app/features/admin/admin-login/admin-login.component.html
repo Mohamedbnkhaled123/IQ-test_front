@@ -1,7 +1,13 @@
 <section class="page-container admin-login-wrap">
   <div class="card">
-    <h2>تسجيل دخول الإدارة</h2>
-    <p class="subtitle">أدخل بيانات مدير النظام للوصول إلى لوحة التحكم الكاملة.</p>
+    <h2>{{ needsSetup() ? 'تعيين بيانات الإدارة لأول مرة' : 'تسجيل دخول الإدارة' }}</h2>
+    <p class="subtitle">
+      {{
+        needsSetup()
+          ? 'اختر اسم المستخدم وكلمة المرور الخاصة بك؛ سيتم حفظها تلقائياً ولن يُطلب منك التسجيل مرة أخرى.'
+          : 'أدخل بيانات مدير النظام للوصول إلى لوحة التحكم الكاملة.'
+      }}
+    </p>
 
     <app-alert-banner type="danger" [message]="errorMessage()" />
 
@@ -30,7 +36,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary full-btn" [disabled]="loading()">
-          {{ loading() ? 'جاري التحقق...' : 'دخول لوحة الإدارة' }}
+          {{ loading() ? 'جاري الحفظ...' : (needsSetup() ? 'حفظ والدخول إلى لوحة الإدارة' : 'دخول لوحة الإدارة') }}
         </button>
       </form>
     }

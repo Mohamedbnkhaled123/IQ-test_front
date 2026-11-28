@@ -70,7 +70,7 @@
           <tr>
             <td data-label="المشتري">{{ buyerDisplay(pay) }}</td>
             <td data-label="النوع">{{ pay.paymentType === 'bulk_purchase' ? 'شراء جماعي' : 'فردي' }}</td>
-            <td data-label="الطريقة">{{ pay.method === 'instapay' ? 'InstaPay' : 'محفظة' }}</td>
+            <td data-label="الطريقة">InstaPay</td>
             <td data-label="المطلوب / المرصود">{{ pay.expectedAmount }} / {{ pay.detectedAmount }} ج.م</td>
             <td data-label="الرقم المرجعي">{{ pay.referenceId || '—' }}</td>
             <td data-label="ثقة AI">{{ (pay.aiConfidence * 100).toFixed(0) }}%</td>

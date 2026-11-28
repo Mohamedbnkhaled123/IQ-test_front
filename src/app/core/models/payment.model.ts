@@ -1,12 +1,10 @@
 import { GrantSummary } from './exam.model';
 
-export type PaymentMethod = 'instapay' | 'wallet';
+export type PaymentMethod = 'instapay';
 
 export interface PaymentInfo {
   instapayHandle: string;
   instapayPhone: string;
-  walletNumber: string;
-  walletProvider: string;
   whatsappNumber: string;
   baseExamPrice: number;
   retakeMultiplier: number;

@@ -13,8 +13,10 @@
 
   @if (paymentInfo(); as info) {
     <div class="receiver-strip">
-      <span><strong>InstaPay:</strong> {{ info.instapayHandle }} ({{ info.instapayPhone }})</span>
-      <span><strong>{{ info.walletProvider }}:</strong> {{ info.walletNumber }}</span>
+      <span><strong>التحويل عبر InstaPay فقط:</strong> {{ info.instapayPhone }}</span>
+      @if (info.instapayHandle) {
+        <span><strong>العنوان:</strong> {{ info.instapayHandle }}</span>
+      }
     </div>
   }
 
@@ -65,20 +67,7 @@
 
   <div class="payment-controls">
     <div class="form-field">
-      <label for="bulk-method">طريقة التحويل</label>
-      <select
-        id="bulk-method"
-        class="form-control"
-        [value]="method()"
-        (change)="onMethodChange($event)"
-      >
-        <option value="instapay">InstaPay</option>
-        <option value="wallet">محفظة إلكترونية</option>
-      </select>
-    </div>
-
-    <div class="form-field">
-      <label for="bulk-receipt">صورة إيصال التحويل (JPG / PNG / WEBP)</label>
+      <label for="bulk-receipt">صورة إيصال التحويل عبر InstaPay (JPG / PNG / WEBP)</label>
       <input
         id="bulk-receipt"
         type="file"

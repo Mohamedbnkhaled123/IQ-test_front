@@ -49,6 +49,7 @@ export interface AdminAuthResponse {
 export interface AuthConfig {
   freePreviewMode: boolean;
   adminNoPasswordMode: boolean;
+  adminConfigured?: boolean;
 }
 
 export interface ApiResponse<T> {
